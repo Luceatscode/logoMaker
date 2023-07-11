@@ -6,13 +6,14 @@ var svg = require('svg-builder')
     .height(200);
 
 var validateColor = require('validate-color').default;
-import shapes from './lib/shapes.js';
+const shapes = require('./lib/shapes');
 
 function isValidColor(color) {
     return validateColor(color);
 }
 
 function init() {
+    const { Square, Circle, Triangle } = shapes;
     inquirer.prompt([
         {
             message: 'What is the text for your logo',
@@ -54,35 +55,33 @@ function init() {
         },
     ]).then(function (data) {
         var logo = svg;
+        console.log('data',data);
+        console.log('logo',logo);
+        console.log('svg',svg);
+
 
         if (data.shape == 'square') {
-            logo = new Square(data.text, data.textcolor, data.shapecolor);
+            logo = new Square(data.text, data.textcolor, data.shapecolor).render();
         }
         else if (data.shape == 'circle') {
-            logo = svg
-            .circle ({
-                fill: data.shapecolor,
-                r: 300,
-                'stroke-width': 1,
-                stroke: data.shapecolor,
-                cx: 42,
-                cy:82,
-            }).text({x: 10, y: 20, stroke: data.textcolor, fill: data.textcolor, 'font-size': 100}, data.text).render();}
+            logo = new Circle(data.text, data.textcolor, data.shapecolor).render();
+        }
             else if (data.shape == 'triangle') {
-                logo = svg
-                    .polygon({
-                        fill: data.shapecolor,
-                        points: '0,0 100,0 50,100',
-                        'stroke-width': 1,
-                        stroke: data.shapecolor,
-                    }).text({x: 10, y: 20, stroke: data.textcolor, fill: data.textcolor, 'font-size': 100}, data.text).render();
+                logo = new Triangle(data.text, data.textcolor, data.shapecolor).render();
+                    // .polygon({
+                    //     fill: data.shapecolor,
+                    //     points: '0,0 100,0 50,100',
+                    //     'stroke-width': 1,
+                    //     stroke: data.shapecolor,
+                    // }).text({x: 10, y: 20, stroke: data.textcolor, fill: data.textcolor, 'font-size': 100}, data.text).render();
                 }
 
         // Get the SVG string
         // const svgContent = svg.toString();
 
         // Save the SVG content to a file
-        fs.writeFileSync('output.svg', logo);
+        console.log('hello paul',logo);
+        fs.writeFileSync('output.svg',logo);
     })
 }
 // Function call to initialize app
